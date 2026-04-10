@@ -21,5 +21,5 @@ migrate-down:
 sqlc:
 	sqlc generate
 
-test: startPostgres
+test: 
 	go test -v -cover ./...
