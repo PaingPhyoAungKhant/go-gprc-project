@@ -24,6 +24,8 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+        ports:
+          - 5432:5432
 
     steps:
       - name: Checkout code
@@ -38,7 +40,7 @@ jobs:
       - name: Setup golang migrate
         run: |
           curl -L https://github.com/golang-migrate/migrate/releases/download/v4.19.1/migrate.darwin-amd64.tar.gz | tar xvz
-          sudo mv migrate.linux-amd64 ./usr/bin/migrate
+          sudo mv migrate ./usr/bin/
           which migrate
 
       - name: Run migrations
