@@ -1,4 +1,7 @@
-PHONY: createdb dropdb postgres migrate-up migrate-down sqlc test
+PHONY: createdb dropdb postgres migrate-up migrate-down sqlc test server mock
+
+server:
+	go run main.go
 
 postgres:
 	docker run --name postgres12 -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres:12alpine
@@ -18,8 +21,17 @@ migrate-up:
 migrate-down:
 	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/simplebank?sslmode=disable" --verbose down 
 
+migrate-up-one:
+	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/simplebank?sslmode=disable" --verbose up 1
+
+migrate-down-one:
+	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/simplebank?sslmode=disable" --verbose down 1
+
 sqlc:
 	sqlc generate
 
+mock:
+	mockgen --package mockdb -destination db/mock/store.go go-gprc-project/db/sqlc Store
+	
 test: 
 	go test -v -cover ./...
